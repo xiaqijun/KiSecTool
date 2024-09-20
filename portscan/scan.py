@@ -311,7 +311,13 @@ class Portscan:
         except KeyboardInterrupt:
             print(Fore.RED + "用户中途退出！")
             pass
-
+    def create_task(self,ip):
+        tmp_dir=os.path.join(os.path.dirname(os.path.abspath(__file__)),'tmp')
+        if not os.path.exists(tmp_dir):
+            os.mkdir(tmp_dir)
+        tmp_ip_file=os.path.join(tmp_dir,'ip{}.txt'.format(ip))
+        with open(tmp_ip_file,'w') as f:
+            f.write(ip)
 
 
 

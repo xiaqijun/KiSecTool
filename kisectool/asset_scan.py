@@ -5,7 +5,6 @@ from datetime import datetime
 import re
 import os
 import socket
-from kisectool.extensions import celery
 
 asset_scan_bp = Blueprint('asset_scan', __name__)
 @asset_scan_bp.route('/scan', methods=['GET'])

@@ -8,6 +8,7 @@ import json
 portscan=Portscan()
 db=SQLAlchemy()
 migrate=Migrate()
+scheduler=APScheduler()
 producer = KafkaProducer(
     bootstrap_servers=["1Panel-kafka-Q26n:9092"],
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
@@ -52,11 +53,19 @@ consumer_http_port=KafkaConsumer(
     auto_offset_reset='earliest',
     enable_auto_commit=True
 )
+def start_consumer_ip():
+    for message in consumer_ip:
+        ip=message.value
+
 def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('../config.py')
     db.init_app(app)
     migrate.init_app(app,db)
+    if scheduler.state == 0:
+        scheduler.init_app(app)
+        scheduler.start()
+    portscan.create_task('1')
     from .asset_scan import asset_scan_bp
     app.register_blueprint(asset_scan_bp)
     return app
