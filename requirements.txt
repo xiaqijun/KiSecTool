@@ -8,3 +8,4 @@ requests==2.32.3
 eventlet==0.37.0
 ipaddr==2.2.0
 Celery==5.4.0
+kafka-python==2.0.2

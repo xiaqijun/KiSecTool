@@ -6,7 +6,7 @@ import re, sys
 from colorama import init, Fore
 import eventlet
 import ipaddr
-import host_scan,port_scan
+from portscan import host_scan,port_scan
 
 
 requests.packages.urllib3.disable_warnings()
