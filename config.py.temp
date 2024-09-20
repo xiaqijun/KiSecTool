@@ -1,0 +1,18 @@
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+SQLALCHEMY_DATABASE_URI="mysql+pymysql://root:12312302>@localhost/syslog"
+SQLALCHEMY_TRACK_MODIFICATIONS=True
+SECRET_KEY="dev"
+REDIS_URL="redis://:1231232@192.168.154.128:6379/0"
+SCHEDULER_API_ENABLED=True
+SCHEDULER_TIMEZONE="Asia/Shanghai"
+SCHEDULER_JOBSTORES={
+    'default': SQLAlchemyJobStore(url=SQLALCHEMY_DATABASE_URI)
+}
+SCHEDULER_EXECUTORS={
+    'default': {'type': 'threadpool', 'max_workers': 20}
+}
+SCHEDULER_ENGINE_OPTIONS={
+    'pool_pre_ping': 'true',
+    'pool_recycle': 20000
+}
+SQLALCHEMY_POOL_CLASS="sqlalchemy.pool.QueuePool"

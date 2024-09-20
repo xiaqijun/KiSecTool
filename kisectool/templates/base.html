@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KisecTool</title>
+    <!-- 引入 Bootstrap 样式 -->
+    <link href="{{url_for('static', filename='bootstrap-select.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='jquery-3.6.4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-select.min.js') }}"></script>
+</head>
+<style>
+    .nav-item.dropdown .dropdown-toggle {
+        background-color: black;
+        color: white;
+        /* 文本颜色 */
+    }
+
+    .nav-item.dropdown .dropdown-toggle::after {
+        display: none;
+    }
+</style>
+<body>
+    <div style="position: absolute; top: 1px; right: 1px;">
+        <button id="logoutButton" class="btn btn-danger" onclick="logout()">Logout</button> 
+    </div>
+    {% if response_data.role == 1 %}
+        <ul class="nav nav-pills bg-dark">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle bg-dark" " id=" navbarDropdown" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false ">
+                    任务管理
+                </a>
+                    <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="nav-link text-white" href="">资产扫描</a>
+                        </li>
+                        <li>
+                            <a class="nav-link text-white" href="">登录日志</a>
+                        </li>
+                        <li>
+                            <a class="nav-link text-white" href="">权限日志</a>
+                        </li>
+                    </ul>
+            </li>
+                <a class="nav-link text-white" href="">权限管理</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="">批量加解密</a>
+            </li>
+        </ul>
+    {% block content %}
+    {% endblock content %}
+</body>
+</html>
