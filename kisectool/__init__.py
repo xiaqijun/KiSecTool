@@ -9,7 +9,7 @@ portscan=Portscan()
 db=SQLAlchemy()
 migrate=Migrate()
 producer = KafkaProducer(
-    bootstrap_servers=["192.168.154.128:9092"],
+    bootstrap_servers=["1Panel-kafka-Q26n:9092"],
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 consumer_ip=KafkaConsumer(

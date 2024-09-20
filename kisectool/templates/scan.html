@@ -1,6 +1,36 @@
-{{extends "base.html"}}
-<div class="mb-3">
-    <label for="inputField" class="form-label">输入框</label>
-    <input type="text" class="form-control" id="inputField" placeholder="请输入内容">
+{%extends "base.html"%}
+{%block content%}
+<div class="container" style="height: 60vh; display: flex; align-items: center;">
+    <div class="mb-3" style="width: 100%;">
+        <div style="display: flex; justify-content: center;">
+            <div style="width: 50%;">
+                <h2 style="text-align: center; color: #007bff; font-family: 'Courier New', Courier, monospace;">IP/域名扫描工具</h2>
+                <textarea class="form-control" id="inputField" rows="4"></textarea>
+                <button class="btn btn-primary mt-3" id="submitButton">提交</button>
+                <script>
+                    document.getElementById('submitButton').addEventListener('click', function() {
+                        const inputField = document.getElementById('inputField');
+                        const inputValue = inputField.value.split('\n');
+                        const jsonData = JSON.stringify({ ip_domain_list: inputValue });
+                        console.log(jsonData);
+                        fetch('/add_scan', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: jsonData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success:', data);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
 </div>
-{{block "content"}}
+{%endblock%}

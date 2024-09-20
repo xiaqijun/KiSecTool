@@ -9,3 +9,4 @@ eventlet==0.37.0
 ipaddr==2.2.0
 Celery==5.4.0
 kafka-python==2.0.2
+colorama==0.4.6
