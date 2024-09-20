@@ -313,6 +313,10 @@ class Portscan:
             pass
     def create_task(self,ip):
         tmp_dir=os.path.join(os.path.dirname(os.path.abspath(__file__)),'tmp')
+        port_file=os.path.join(tmp_dir,'port.txt')
+        if not os.path.exists(port_file):
+            with open(port_file,'w') as f:
+                f.write('1-65535')
         if not os.path.exists(tmp_dir):
             os.mkdir(tmp_dir)
         tmp_ip_file=os.path.join(tmp_dir,'ip{}.txt'.format(ip))
