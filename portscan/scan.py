@@ -7,6 +7,7 @@ from colorama import init, Fore
 import eventlet
 import ipaddr
 from portscan import host_scan,port_scan
+from datetime import datetime
 
 
 requests.packages.urllib3.disable_warnings()
@@ -311,6 +312,7 @@ class Portscan:
         except KeyboardInterrupt:
             print(Fore.RED + "用户中途退出！")
             pass
+        
     def create_task(self,ip):
         tmp_dir=os.path.join(os.path.dirname(os.path.abspath(__file__)),'tmp')
         port_file=os.path.join(tmp_dir,'port.txt')
@@ -319,9 +321,14 @@ class Portscan:
                 f.write('1-65535')
         if not os.path.exists(tmp_dir):
             os.mkdir(tmp_dir)
-        tmp_ip_file=os.path.join(tmp_dir,'ip{}.txt'.format(ip))
+        tmp_ip_file=os.path.join(tmp_dir,'ip{}.txt'.format(datetime.now().strftime('%Y%m%d%H%M%S')))
+        tmp_result_file=os.path.join(tmp_dir,'result{}.txt'.format(datetime.now().strftime('%Y%m%d%H%M%S')))
         with open(tmp_ip_file,'w') as f:
             f.write(ip)
+        self.chuli_canshu(tmp_ip_file,port_file,'',1,2,19,tmp_result_file)
+        if os.path.exists(tmp_ip_file):
+            os.remove(tmp_ip_file)
+        return tmp_result_file
 
 
 

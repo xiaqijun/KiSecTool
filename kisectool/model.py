@@ -9,5 +9,7 @@ class Asset_port(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     port = db.Column(db.Integer, nullable=False)
     service = db.Column(db.String(64), nullable=True)
+    title=db.Column(db.String(64),nullable=True)
     asset_id = db.Column(db.Integer, db.ForeignKey('asset.id'))
+    
 

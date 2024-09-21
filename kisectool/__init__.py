@@ -5,6 +5,8 @@ from flask_apscheduler import APScheduler
 from portscan.scan import Portscan
 from kafka import KafkaProducer, KafkaConsumer
 import json
+from datetime import datetime
+from uuid import uuid4
 portscan=Portscan()
 db=SQLAlchemy()
 migrate=Migrate()
@@ -53,10 +55,15 @@ consumer_http_port=KafkaConsumer(
     auto_offset_reset='earliest',
     enable_auto_commit=True
 )
-def start_consumer_ip():
-    for message in consumer_ip:
-        ip=message.value
 
+
+def start_consumer_ip():
+    print('开始消费')
+    for message in consumer_ip:
+        ip=message.value.get('ip')
+        from .task import create_ip_task
+        scheduler.add_job(id=str(uuid4()),func=create_ip_task,args=(ip,),tigger='date',next_run_time=datetime.now())
+        print('任务添加成功')
 def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('../config.py')
@@ -65,7 +72,7 @@ def create_app():
     if scheduler.state == 0:
         scheduler.init_app(app)
         scheduler.start()
-    portscan.create_task('1')
     from .asset_scan import asset_scan_bp
     app.register_blueprint(asset_scan_bp)
+    scheduler.add_job(id='consumer_ip',func=start_consumer_ip,trigger='date',next_run_time=datetime.now())
     return app

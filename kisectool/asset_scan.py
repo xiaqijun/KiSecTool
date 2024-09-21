@@ -27,6 +27,8 @@ def add_scan():
                     print(e)
             elif check_ip_or_domain(ip_domain)==3:
                 producer.send('main_domain', value=ip_domain)
+            else:
+                return jsonify({'msg':'无效的输入'})
         return jsonify({'msg':'success'})
     except Exception as e:
         return jsonify({'msg':str(e)})
