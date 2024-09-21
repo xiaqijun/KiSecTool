@@ -1,4 +1,4 @@
-from . import db, portscan,producer
+from . import db, portscan,producer,scheduler
 from .model import Asset, Asset_port
 def create_ip_task(ip):
     print('开始扫描')
@@ -13,15 +13,16 @@ def create_ip_task(ip):
                 port=line_list[1]
                 service=line_list[3]
                 title=line_list[4]
-            if not Asset.query.filter_by(ip=ip).first():
-                asset=Asset(ip=ip)
-                db.session.add(asset)
-                db.session.commit()
-            asset=Asset.query.filter_by(ip=ip).first()
-            if not Asset_port.query.filter_by(asset_id=asset.id,port=port).first():
-                asset_port=Asset_port(port=port,service=service,title=title,asset_id=asset.id)
-                db.session.add(asset_port)
-                db.session.commit()
+            with scheduler.app.app_context():
+                if not Asset.query.filter_by(ip=ip).first():
+                    asset=Asset(ip=ip)
+                    db.session.add(asset)
+                    db.session.commit()
+                asset=Asset.query.filter_by(ip=ip).first()
+                if not Asset_port.query.filter_by(asset_id=asset.id,port=port).first():
+                    asset_port=Asset_port(port=port,service=service,title=title,asset_id=asset.id)
+                    db.session.add(asset_port)
+                    db.session.commit()
             if service=='http' or service=='https':
                 producer.send('http_port',value={'ip':ip,'port':port,'title':title})
             if service=='ssh' or service=='ftp' or service=='telnet' or service=='mysql':

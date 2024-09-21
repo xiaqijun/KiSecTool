@@ -11,11 +11,11 @@ from datetime import datetime
 
 
 requests.packages.urllib3.disable_warnings()
-init(autoreset=True)  # 初始化，并且设置颜色设置自动恢复
-lock = threading.Lock()  # 申请一个锁
+  # 申请一个锁
 
 class Portscan:
     def __init__(self):
+        self.lock = threading.Lock()
         self.portQueue = queue.Queue()
         self.flag = 0  # 是否显示过程
         self.jp_flag = 0  # 跳过主机发现
@@ -257,14 +257,14 @@ class Portscan:
 
     # host, port, status, service, banner, title
     def out_result(self, host, port, zhuangtai,service='Unknown', Banner='None', title=''):
-        lock.acquire()  # 加锁
+        self.lock.acquire()  # 加锁
         if len(Banner) > 60:
             Banner = Banner[:60]
         Banner = (Banner.replace('\r','').replace('\n','')).strip().replace('\r\n','')
         title = (title.replace('\r', '').replace('\n', '')).strip()
         if zhuangtai == 'Opened':
             self.save_file(host,port,zhuangtai,service,title,Banner)
-        lock.release()  # 执行完 ，释放锁
+        self.lock.release()  # 执行完 ，释放锁
 
     def save_file(self,host,port,zhuangtai,service,title,Banner):
         try:

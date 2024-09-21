@@ -56,14 +56,21 @@ consumer_http_port=KafkaConsumer(
     enable_auto_commit=True
 )
 
-
+@scheduler.task('date',id='consumer_ip')
 def start_consumer_ip():
     print('开始消费')
-    for message in consumer_ip:
-        ip=message.value.get('ip')
-        from .task import create_ip_task
-        scheduler.add_job(id=str(uuid4()),func=create_ip_task,args=(ip,),tigger='date',next_run_time=datetime.now())
-        print('任务添加成功')
+    while True:
+        message=consumer_ip.poll(timeout_ms=1000,max_records=1)
+        if message:
+            for topic_partition,records in message.items():
+                for record in records:
+                    ip=record.value
+                    print(ip)
+                    #创建任务
+                    task_id=str(uuid4())
+                    from .task import create_ip_task
+                    scheduler.add_job(id=str(uuid4()),func=create_ip_task,args=(ip,),trigger='date',run_date=datetime.now())
+                    print('创建任务',task_id)
 def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('../config.py')
@@ -72,7 +79,7 @@ def create_app():
     if scheduler.state == 0:
         scheduler.init_app(app)
         scheduler.start()
+    scheduler.remove_all_jobs()
     from .asset_scan import asset_scan_bp
     app.register_blueprint(asset_scan_bp)
-    scheduler.add_job(id='consumer_ip',func=start_consumer_ip,trigger='date',next_run_time=datetime.now())
     return app
